@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/JavaBlock.iml" filepath="$PROJECT_DIR$/.idea/JavaBlock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/part1/block.iml" filepath="$PROJECT_DIR$/part1/block.iml" />
+      <module fileurl="file://$PROJECT_DIR$/part2/part2.iml" filepath="$PROJECT_DIR$/part2/part2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/part3/part3.iml" filepath="$PROJECT_DIR$/part3/part3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/part4/part4.iml" filepath="$PROJECT_DIR$/part4/part4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/part5/part5.iml" filepath="$PROJECT_DIR$/part5/part5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/part6/part6.iml" filepath="$PROJECT_DIR$/part6/part6.iml" />
+      <module fileurl="file://$PROJECT_DIR$/part7/part7.iml" filepath="$PROJECT_DIR$/part7/part7.iml" />
+    </modules>
+  </component>
+</project>
