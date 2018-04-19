@@ -6,11 +6,7 @@
 
     <groupId>wyc.block</groupId>
     <artifactId>block</artifactId>
-    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>../part7</module>
-    </modules>
 
-
+    
 </project>
