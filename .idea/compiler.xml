@@ -7,11 +7,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="part1" />
-        <module name="part2" />
         <module name="part3" />
         <module name="part4" />
         <module name="part5" />
         <module name="part6" />
+        <module name="part7" />
+      </profile>
+      <profile name="Annotation profile for block" enabled="true">
+        <sourceOutputDir name="../part7/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../part7/target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="part2" />
       </profile>
     </annotationProcessing>
   </component>
