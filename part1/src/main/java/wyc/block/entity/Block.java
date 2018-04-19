@@ -2,6 +2,8 @@ package wyc.block.entity;
 
 import wyc.block.util.DataUtil;
 
+import java.util.Date;
+
 /**
  * Block实体由区块头和交易两部分构成
  * Timestamp, PrevBlockHash, Hash 属于区块头（block header）
@@ -18,8 +20,8 @@ public class Block {
 	private byte[] hash;
 	private byte[] data;
 	
-	public Block(long timestamp, byte[] prevBlockHash,  byte[] data){
-		this.timestamp=timestamp;
+	public Block(byte[] prevBlockHash,  byte[] data){
+		this.timestamp=new Date().getTime();
 		this.prevBlockHash=prevBlockHash;
 		this.data=data;
 	}

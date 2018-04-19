@@ -15,7 +15,7 @@ public class BlockUtil {
 	 * @return
 	 */
 	public static Block getNewBlock(byte[] data, byte[] prevBlockHash) {
-		Block block = new Block(new Date().getTime(), prevBlockHash, data);
+		Block block = new Block(prevBlockHash, data);
 		setHash(block);
 		return block;
 	}
