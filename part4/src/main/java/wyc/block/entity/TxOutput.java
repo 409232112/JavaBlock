@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class TxOutput implements Serializable {
 
-    private int value;
+    private int value;   //入账数量
     private String scriptPubKey;
 
     public TxOutput(int value , String scriptPubKey){
@@ -31,6 +31,7 @@ public class TxOutput implements Serializable {
     public void setScriptPubKey(String scriptPubKey) {
         this.scriptPubKey = scriptPubKey;
     }
+
     public boolean canBeUnlockedWith(String unlockingData ){
         return  getScriptPubKey().equals(unlockingData) ;
     }

@@ -40,6 +40,11 @@ public class BlockChainUtil {
             return null;
         }
     }
+
+    /**
+     * 获取最新区块hash
+     * @return
+     */
     private static byte[] getLastHash(){
         Object lastHashO = RedisUtil.get(BlockConstant.LAST_HASH_INDEX,BlockConstant.LAST_HASH_KEY);
         return lastHashO!=null?(byte[])lastHashO:null;

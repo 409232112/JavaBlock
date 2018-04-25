@@ -10,8 +10,8 @@ import java.io.Serializable;
  */
 public class TxInput implements Serializable {
 
-    private byte[] txId;
-    private int vout;
+    private byte[] txId;//交易ID
+    private int vout;//输出数量
     private String scripSig;
 
     public TxInput(byte[] txId,int vout,String scripSig){
@@ -20,12 +20,7 @@ public class TxInput implements Serializable {
         this.scripSig=scripSig;
     }
 
-
-
-
-    public byte[] getTxId() {
-        return txId;
-    }
+    public byte[] getTxId() { return txId; }
 
     public void setTxId(byte[] txId) {
         this.txId = txId;
@@ -50,8 +45,4 @@ public class TxInput implements Serializable {
     public boolean canUnlockOutPutWith(String unlockingData ){
         return getScripSig().equals(unlockingData);
     }
-
-
-
-
 }

@@ -17,9 +17,9 @@ public class BlockMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	//	BlockChainUtil.createBlockChain("wyc");//创建一个区块链，默认每块10奖励
-	//	BlockChainUtil.printChain();//打印区块链数据
-		TransactionUtil.send("wyc","cj",100);//wyc 向 cj 转账2
+		BlockChainUtil.createBlockChain("wyc");//创建一个区块链，默认每块10奖励
+		BlockChainUtil.printChain();//打印区块链数据
+		TransactionUtil.send("wyc","cj",2);//wyc 向 cj 转账2
 		BlockChainUtil.printChain();
 		TransactionUtil.getBalance("cj");//获取cj地址余额
 		TransactionUtil.getBalance("wyc");//获取wyc地址余额
