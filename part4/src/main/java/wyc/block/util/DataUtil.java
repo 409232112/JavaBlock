@@ -30,7 +30,7 @@ public class DataUtil {
 	}
 
 	/**
-	 * 将byte数组转为16进制
+	 * 将byte数组转为16进制字符串
 	 * @param bytes
 	 * @return
 	 */
@@ -46,6 +46,31 @@ public class DataUtil {
 			stringBuffer.append(temp);
 		}
 		return stringBuffer.toString();
+	}
+
+	/**
+	 * 将16进制字符串转成byte数组
+	 * @param str
+	 * @return
+	 */
+	public static byte[] hex2Byte(String str) {
+		if(str.length()%2==1){
+			str="0"+str;
+		}
+		int iPos = 0;
+		int iLen = str.length();
+		byte[] result =new byte[iLen/2];
+
+		while(iLen>=2){
+			result[iPos++] = Byte.valueOf(str.substring(0, 2));
+			str= str.substring(2);
+			iLen = str.length();
+		}
+		return result;
+	}
+
+	public static void main(String[] args){
+
 	}
 
 	/**
@@ -65,6 +90,7 @@ public class DataUtil {
 		}
 		return encodeBytes;
 	}
+
 	
 	
 	/**
@@ -103,11 +129,11 @@ public class DataUtil {
 	 * @return
 	 */
 	public static byte[] joinByte(byte[]... args){
-		int totalLenght = 0;
+		int totalLength = 0;
 		for(byte[] arg:args){
-			totalLenght+=arg.length;
+			totalLength+=arg.length;
 		}
-		byte[] result =  new byte[totalLenght];
+		byte[] result =  new byte[totalLength];
 		int i=0;
 		for(byte[] arg:args){
 			for(byte bt :arg){
@@ -117,6 +143,8 @@ public class DataUtil {
 		}
 		return result;
 	}
+
+
 
 
 	/**

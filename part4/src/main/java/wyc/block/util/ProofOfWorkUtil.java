@@ -21,7 +21,7 @@ public class ProofOfWorkUtil {
     public static Map run(ProofOfWork proofOfWork){
         Map retMap = new HashMap();
         byte[] hash;
-        System.out.println("Mining the block containing "+DataUtil.bytes2String(proofOfWork.getBlock().getData()));
+        logger.info("Mining a New Block ...");
         for(int nonce=0;nonce<ProofOfWorkConstant.maxNonce;nonce++){
             byte[] data = proofOfWork.prepareData(nonce);
             hash=DataUtil.getSHA256Bytes(data);

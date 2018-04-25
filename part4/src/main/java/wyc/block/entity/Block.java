@@ -1,9 +1,10 @@
 package wyc.block.entity;
 
 import wyc.block.util.DataUtil;
+import wyc.block.util.TransactionUtil;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Block实体由区块头和交易两部分构成
@@ -11,7 +12,7 @@ import java.util.Date;
  * Timestamp     : 当前时间戳，也就是区块创建的时间
  * PrevBlockHash : 前一个块的哈希
  * Hash          : 当前块的哈希
- * Data          : 区块实际存储的信息，比特币中也就是交易
+ * transactions  : 区块实际存储交易
  * @author Administrator
  */
 public class Block implements Serializable {
@@ -19,13 +20,13 @@ public class Block implements Serializable {
 	private long timestamp;
 	private byte[] prevBlockHash;
 	private byte[] hash;
-	private byte[] data;
+	private List<Transaction> transactions;
 	private int nonce;
 	
-	public Block(byte[] prevBlockHash,  byte[] data){
+	public Block(byte[] prevBlockHash,  List<Transaction> transactions){
 		this.timestamp=new Date().getTime();
 		this.prevBlockHash=prevBlockHash;
-		this.data=data;
+		this.transactions=transactions;
 		this.nonce=0;
 	}
 	
@@ -40,13 +41,13 @@ public class Block implements Serializable {
 	public byte[] getHash() {
 		return hash;
 	}
-	
-	public byte[] getData() {
-		return data;
+	public List<Transaction> getTransactions() {
+		return transactions;
 	}
 	public int getNonce() {
 		return nonce;
 	}
+
 	public void setNonce(int nonce) {
 		this.nonce = nonce;
 	}
@@ -55,9 +56,36 @@ public class Block implements Serializable {
 	}
 	@Override
 	public String toString() {
+		String TransactionsInfo="-------------Transactions---------------\n";
+		for(Transaction tx : getTransactions()){
+			TransactionsInfo += "TransactionId : "+DataUtil.byte2Hex(tx.getId())+"    ";
+			TransactionsInfo += "IsCoinbase : "+TransactionUtil.isCoinbase(tx)+"    ";
+
+			List<Map> txInputList = new ArrayList();
+			Map txInputMap = new HashMap();
+			for(TxInput txInput :tx.getvIns() ){
+				txInputMap.put("TxId",	DataUtil.bytes2String(txInput.getTxId()));
+				txInputMap.put("Vout",	txInput.getVout());
+				txInputMap.put("ScripSig", txInput.getScripSig());
+				txInputList.add(txInputMap);
+				txInputMap = new HashMap();
+			}
+			TransactionsInfo += "\nTxInput : " +txInputList;
+
+			List<Map> txOutputList = new ArrayList();
+			Map txOutputMap = new HashMap();
+			for(TxOutput txOutput:tx.getvOuts()){
+				txOutputMap.put("Value",txOutput.getValue());
+				txOutputMap.put("ScriptPubKey",txOutput.getScriptPubKey());
+				txOutputList.add(txOutputMap);
+				txOutputMap = new HashMap();
+			}
+			TransactionsInfo += "\nTxOutput : " +txOutputList;
+		}
+
 		return "Prev Hash:"+DataUtil.byte2Hex(getPrevBlockHash())+"\n"+
-			   "Data:"+DataUtil.bytes2String(getData())+"\n"+
 				"Hash:"+DataUtil.byte2Hex(getHash())+"\n"+
-				"nonce:"+getNonce()+"\n";
+				"Nonce:"+getNonce()+"\n"+
+				TransactionsInfo+"\n";
 	}
 }

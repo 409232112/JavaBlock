@@ -1,6 +1,7 @@
 package wyc.block.entity;
 
 import wyc.block.constant.ProofOfWorkConstant;
+import wyc.block.util.BlockUtil;
 import wyc.block.util.DataUtil;
 
 import java.math.BigInteger;
@@ -30,7 +31,7 @@ public class ProofOfWork {
      */
     public byte[] prepareData(int nonce) {
         return DataUtil.joinByte(block.getPrevBlockHash(),
-                block.getData(),
+                BlockUtil.getTransactionsHash(block),
                 DataUtil.intToHex(block.getTimestamp()),
                 DataUtil.intToHex(ProofOfWorkConstant.targetBits),
                 DataUtil.intToHex(nonce));
