@@ -24,9 +24,18 @@ public class Base58Util {
     /**
      * Encodes the given bytes in base58. No checksum is appended.
      */
-    public static String encode(byte[] input) {
+    public static String encode2String(byte[] input) {
+        byte[] output = encode2Bytes(input);
+        try {
+            return new String(output, "US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);  // Cannot happen.
+        }
+    }
+
+    public static byte[] encode2Bytes(byte[] input) {
         if (input.length == 0) {
-            return "";
+            return new byte[0];
         }
         input = copyOfRange(input, 0, input.length);
         // Count leading zeroes.
@@ -57,12 +66,10 @@ public class Base58Util {
         }
 
         byte[] output = copyOfRange(temp, j, temp.length);
-        try {
-            return new String(output, "US-ASCII");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);  // Cannot happen.
-        }
+        return output;
     }
+
+
 
     public static byte[] decode(String input) throws IllegalArgumentException {
         if (input.length() == 0) {
