@@ -1,10 +1,12 @@
-package wyc.block.util;
+package wyc.block.util.blockchain;
 
 import org.apache.log4j.Logger;
 import wyc.block.constant.BlockConstant;
 import wyc.block.entity.Block;
 import wyc.block.entity.ProofOfWork;
 import wyc.block.entity.Transaction;
+import wyc.block.util.RedisUtil;
+import wyc.block.util.transacation.TransactionUtil;
 
 import java.util.List;
 

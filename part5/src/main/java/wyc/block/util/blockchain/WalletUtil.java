@@ -1,9 +1,13 @@
-package wyc.block.util;
+package wyc.block.util.blockchain;
 
 import wyc.block.constant.WalletConstant;
 import wyc.block.entity.Wallet;
+import wyc.block.entity.Wallets;
+import wyc.block.util.DataUtil;
+import wyc.block.util.encrypt.Base58Util;
 
 import java.security.interfaces.ECPublicKey;
+import java.util.Arrays;
 
 public class WalletUtil {
     public static byte[] getAddress(Wallet wallet) throws Exception{
@@ -24,7 +28,7 @@ public class WalletUtil {
         byte[] address = Base58Util.encode2Bytes(fullPayload);
         return address;
     }
-    private static byte[] hashPubKey(ECPublicKey ecPublicKey) throws Exception{
+    public static byte[] hashPubKey(ECPublicKey ecPublicKey) throws Exception{
         byte[] publicSHA256 = DataUtil.getSHA256Bytes(ecPublicKey.getEncoded());
         return DataUtil.encodeRipeMD160(publicSHA256);
     }
@@ -34,5 +38,20 @@ public class WalletUtil {
         byte[] retBytes = new byte[WalletConstant.ADDRESS_CHECKSUM_LEN];
         System.arraycopy(secondSHA, 0, retBytes, 0, 4);
         return retBytes;
+    }
+
+    public static boolean validateAddress(String address){
+        byte[] pubKeyHash = Base58Util.decode(address);
+        byte[] actualChecksum =DataUtil.subBytes(pubKeyHash,pubKeyHash.length-WalletConstant.ADDRESS_CHECKSUM_LEN,WalletConstant.ADDRESS_CHECKSUM_LEN);
+        byte version = pubKeyHash[0];
+        byte[] versionBytes = {version};
+        pubKeyHash = DataUtil.subBytes(pubKeyHash,1,pubKeyHash.length-WalletConstant.ADDRESS_CHECKSUM_LEN-1);
+        byte[] targetChecksum=checksum(DataUtil.combineBytes(versionBytes,pubKeyHash));
+        return Arrays.equals(actualChecksum,targetChecksum);
+    }
+
+    public static Wallet getWalletFromWallets(String from){
+        //TO-DO //钱包存文件
+        return Wallets.getWallets().get("from");
     }
 }

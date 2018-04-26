@@ -1,4 +1,4 @@
-package wyc.block.util;
+package wyc.block.util.encrypt;
 
 import org.apache.log4j.Logger;
 

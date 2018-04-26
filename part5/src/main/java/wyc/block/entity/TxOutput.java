@@ -1,6 +1,10 @@
 package wyc.block.entity;
 
+import wyc.block.util.DataUtil;
+import wyc.block.util.encrypt.Base58Util;
+
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * 输出
@@ -10,11 +14,11 @@ import java.io.Serializable;
 public class TxOutput implements Serializable {
 
     private int value;   //入账数量
-    private String scriptPubKey;
+    private byte[] pubKeyHash;
 
-    public TxOutput(int value , String scriptPubKey){
+    public TxOutput(int value,String address){
         this.value = value;
-        this.scriptPubKey=scriptPubKey;
+        lock(DataUtil.string2Bytes(address));
     }
     public int getValue() {
         return value;
@@ -24,17 +28,23 @@ public class TxOutput implements Serializable {
         this.value = value;
     }
 
-    public String getScriptPubKey() {
-        return scriptPubKey;
+    public byte[] getPubKeyHash() {
+        return pubKeyHash;
     }
 
-    public void setScriptPubKey(String scriptPubKey) {
-        this.scriptPubKey = scriptPubKey;
+    public void setPubKeyHash(byte[] pubKeyHash) {
+        this.pubKeyHash = pubKeyHash;
     }
 
-    public boolean canBeUnlockedWith(String unlockingData ){
-        return  getScriptPubKey().equals(unlockingData) ;
+    public void lock(byte[] address){
+        byte[] bytes = Base58Util.decode(address);
+        byte[] pubKeyHash = new byte[bytes.length-1-4];
+        System.arraycopy(bytes,1,pubKeyHash,0,bytes.length-4);
+        setPubKeyHash(pubKeyHash);
     }
 
+    public boolean isLockedWithKey(byte[] pubKeyHash){
+        return Arrays.equals(getPubKeyHash(),pubKeyHash);
+    }
 
 }

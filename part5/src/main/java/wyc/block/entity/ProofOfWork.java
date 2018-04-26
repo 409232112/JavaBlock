@@ -1,7 +1,7 @@
 package wyc.block.entity;
 
 import wyc.block.constant.ProofOfWorkConstant;
-import wyc.block.util.BlockUtil;
+import wyc.block.util.blockchain.BlockUtil;
 import wyc.block.util.DataUtil;
 
 import java.math.BigInteger;

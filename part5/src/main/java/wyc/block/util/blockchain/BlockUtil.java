@@ -1,8 +1,10 @@
-package wyc.block.util;
+package wyc.block.util.blockchain;
 
 import wyc.block.entity.Block;
 import wyc.block.entity.ProofOfWork;
 import wyc.block.entity.Transaction;
+import wyc.block.util.DataUtil;
+import wyc.block.util.encrypt.SerializeUtil;
 
 import java.util.ArrayList;
 import java.util.List;

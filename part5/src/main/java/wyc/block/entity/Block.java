@@ -1,7 +1,7 @@
 package wyc.block.entity;
 
 import wyc.block.util.DataUtil;
-import wyc.block.util.TransactionUtil;
+import wyc.block.util.transacation.TransactionUtil;
 
 import java.io.Serializable;
 import java.util.*;
@@ -66,7 +66,7 @@ public class Block implements Serializable {
 			for(TxInput txInput :tx.getvIns() ){
 				txInputMap.put("TxId",	DataUtil.bytes2String(txInput.getTxId()));
 				txInputMap.put("Vout",	txInput.getVout());
-				txInputMap.put("ScripSig", txInput.getScripSig());
+			//	txInputMap.put("ScripSig", txInput.getScripSig());
 				txInputList.add(txInputMap);
 				txInputMap = new HashMap();
 			}
@@ -76,7 +76,7 @@ public class Block implements Serializable {
 			Map txOutputMap = new HashMap();
 			for(TxOutput txOutput:tx.getvOuts()){
 				txOutputMap.put("Value",txOutput.getValue());
-				txOutputMap.put("ScriptPubKey",txOutput.getScriptPubKey());
+			//	txOutputMap.put("ScriptPubKey",txOutput.getScriptPubKey());
 				txOutputList.add(txOutputMap);
 				txOutputMap = new HashMap();
 			}

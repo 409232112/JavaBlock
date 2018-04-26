@@ -1,4 +1,4 @@
-package wyc.block.util;
+package wyc.block.util.encrypt;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 
@@ -7,8 +7,6 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ECDSAUtil {
 

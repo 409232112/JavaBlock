@@ -1,9 +1,6 @@
-package wyc.block.util;
+package wyc.block.util.encrypt;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.util.UUID;
 
 public class Base58Util {
     public static final char[] ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".toCharArray();
@@ -115,6 +112,12 @@ public class Base58Util {
 
         return copyOfRange(temp, j - zeroCount, temp.length);
     }
+
+    public static byte[] decode(byte[] bytes) throws IllegalArgumentException {
+        String input = new String(bytes);
+        return decode(input);
+    }
+
 
 
     //

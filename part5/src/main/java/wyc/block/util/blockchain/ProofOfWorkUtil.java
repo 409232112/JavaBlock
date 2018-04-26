@@ -1,9 +1,10 @@
-package wyc.block.util;
+package wyc.block.util.blockchain;
 
 import org.apache.log4j.Logger;
 import wyc.block.constant.ProofOfWorkConstant;
 import wyc.block.entity.Block;
 import wyc.block.entity.ProofOfWork;
+import wyc.block.util.DataUtil;
 
 import java.math.BigInteger;
 import java.util.HashMap;

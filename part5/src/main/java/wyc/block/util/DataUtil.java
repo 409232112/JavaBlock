@@ -255,4 +255,32 @@ public class DataUtil {
 		//做十六进制的编码处理
 		return new String(Hex.encode(b));
 	}
+
+	/**
+	 * 在字节数组中截取指定长度数组
+	 * @param src 原数组
+	 * @param begin 开始截取位置
+	 * @param count 截多少位数
+	 * @return
+	 */
+	public static byte[] subBytes(byte[] src, int begin, int count) {
+		byte[] bs = new byte[count];
+		System.arraycopy(src, begin, bs, 0, count);
+		return bs;
+	}
+
+	public static byte[] combineBytes(byte[] ... args){
+		int totalLength = 0;
+		for(byte[] tmp:args){
+			totalLength+=tmp.length;
+		}
+		byte[] retBytes = new byte[totalLength];
+		int n=0;
+		for(byte[] a:args){
+			for(byte b:a){
+				retBytes[n++]=b;
+			}
+		}
+		return retBytes;
+	}
 }

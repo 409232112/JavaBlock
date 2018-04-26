@@ -1,7 +1,7 @@
 package wyc.block.entity;
 
 import wyc.block.util.DataUtil;
-import wyc.block.util.SerializeUtil;
+import wyc.block.util.encrypt.SerializeUtil;
 
 import java.io.Serializable;
 import java.util.List;

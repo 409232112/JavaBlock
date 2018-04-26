@@ -1,6 +1,10 @@
 package wyc.block.entity;
 
+import wyc.block.util.blockchain.WalletUtil;
+
 import java.io.Serializable;
+import java.security.interfaces.ECPublicKey;
+import java.util.Arrays;
 
 /**
  * 输出
@@ -12,12 +16,14 @@ public class TxInput implements Serializable {
 
     private byte[] txId;//交易ID
     private int vout;//输出数量
-    private String scripSig;
+    private byte[] signature;
+    private static ECPublicKey publicKey;
 
-    public TxInput(byte[] txId,int vout,String scripSig){
+    public TxInput(byte[] txId,int vout,byte[] signature,ECPublicKey publicKey){
         this.txId=txId;
         this.vout=vout;
-        this.scripSig=scripSig;
+        this.signature=signature;
+        this.publicKey=publicKey;
     }
 
     public byte[] getTxId() { return txId; }
@@ -34,15 +40,25 @@ public class TxInput implements Serializable {
         this.vout = vout;
     }
 
-    public String getScripSig() {
-        return scripSig;
+    public byte[] getSignature() {
+        return signature;
     }
 
-    public void setScripSig(String scripSig) {
-        this.scripSig = scripSig;
+    public void setSignature(byte[] signature) {
+        this.signature = signature;
     }
 
-    public boolean canUnlockOutPutWith(String unlockingData ){
-        return getScripSig().equals(unlockingData);
+    public static ECPublicKey getPublicKey() {
+        return publicKey;
     }
+
+    public void setPublicKey(ECPublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public boolean useKey(byte[] pubKeyHash) throws Exception{
+        byte[] lockingHash = WalletUtil.hashPubKey(getPublicKey());
+        return Arrays.equals(lockingHash,pubKeyHash);
+    }
+
 }
