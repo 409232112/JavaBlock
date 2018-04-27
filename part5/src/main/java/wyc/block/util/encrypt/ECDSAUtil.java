@@ -22,7 +22,7 @@ public class ECDSAUtil {
      * @return
      * @throws Exception
      */
-    public static String doSign(String src,ECPrivateKey ecPrivateKey) throws  Exception{
+    public static String doSignAsString(String src,ECPrivateKey ecPrivateKey) throws  Exception{
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(ecPrivateKey.getEncoded());
         PrivateKey privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
         signature.initSign(privateKey);
@@ -30,6 +30,10 @@ public class ECDSAUtil {
         byte[] res = signature.sign();
         return HexBin.encode(res);
     }
+    public static byte[] doSignAsBytes(String src,ECPrivateKey ecPrivateKey) throws  Exception{
+        return doSignAsString(src,ecPrivateKey).getBytes();
+    }
+
 
     /**
      * 验证
@@ -39,7 +43,10 @@ public class ECDSAUtil {
      * @throws Exception
      */
     public static boolean validate(String src,String sign,ECPublicKey ecPublicKey) throws  Exception{
-        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(ecPublicKey.getEncoded());
+       return validateBytesKey(src,sign,ecPublicKey.getEncoded());
+    }
+    public static boolean validateBytesKey(String src,String sign,byte[] pubKey)  throws  Exception{
+        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(pubKey);
         keyFactory = KeyFactory.getInstance("EC");
         PublicKey publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
         signature.initVerify(publicKey);

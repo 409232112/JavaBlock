@@ -4,12 +4,14 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.Arrays;
 
 public class DataUtil {
 
@@ -53,6 +55,34 @@ public class DataUtil {
 	}
 
 	/**
+	 * Convert hex string to byte[]
+	 * @param hexString the hex string
+	 * @return byte[]
+	 */
+	public static byte[] hexStringToBytes(String hexString) {
+		if (hexString == null || hexString.equals("")) {
+			return null;
+		}
+		hexString = hexString.toUpperCase();
+		int length = hexString.length() / 2;
+		char[] hexChars = hexString.toCharArray();
+		byte[] d = new byte[length];
+		for (int i = 0; i < length; i++) {
+			int pos = i * 2;
+			d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+		}
+		return d;
+	}
+	/**
+	 * Convert char to byte
+	 * @param c char
+	 * @return byte
+	 */
+	private static byte charToByte(char c) {
+		return (byte) "0123456789ABCDEF".indexOf(c);
+	}
+
+	/**
 	 * 将16进制字符串转成byte数组
 	 * @param str
 	 * @return
@@ -73,9 +103,6 @@ public class DataUtil {
 		return result;
 	}
 
-	public static void main(String[] args){
-
-	}
 
 	/**
 	 * 对byte数组进行hash
@@ -283,4 +310,9 @@ public class DataUtil {
 		}
 		return retBytes;
 	}
+
+
+
+
+
 }

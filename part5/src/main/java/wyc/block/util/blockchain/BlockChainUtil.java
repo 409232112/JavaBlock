@@ -66,6 +66,13 @@ public class BlockChainUtil {
      */
     public static void mineBlock(List<Transaction> transactions){
         try{
+            for(Transaction transaction:transactions){
+                if(!TransactionUtil.verifyTransaction(transaction)){
+                    logger.error("ERROR: Invalid transaction");
+                    System.exit(1);
+                }
+            }
+
             byte[] lastHash =getLastHash();
             Block block = BlockUtil.getNewBlock(transactions,lastHash);
             saveBlock(block);

@@ -64,7 +64,7 @@ public class Block implements Serializable {
 			List<Map> txInputList = new ArrayList();
 			Map txInputMap = new HashMap();
 			for(TxInput txInput :tx.getvIns() ){
-				txInputMap.put("TxId",	DataUtil.bytes2String(txInput.getTxId()));
+				txInputMap.put("TxId",	DataUtil.byte2Hex(txInput.getTxId()));
 				txInputMap.put("Vout",	txInput.getVout());
 			//	txInputMap.put("ScripSig", txInput.getScripSig());
 				txInputList.add(txInputMap);
@@ -76,7 +76,7 @@ public class Block implements Serializable {
 			Map txOutputMap = new HashMap();
 			for(TxOutput txOutput:tx.getvOuts()){
 				txOutputMap.put("Value",txOutput.getValue());
-			//	txOutputMap.put("ScriptPubKey",txOutput.getScriptPubKey());
+				txOutputMap.put("PubKeyHash",DataUtil.byte2Hex(txOutput.getPubKeyHash()));
 				txOutputList.add(txOutputMap);
 				txOutputMap = new HashMap();
 			}

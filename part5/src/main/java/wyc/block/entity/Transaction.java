@@ -5,6 +5,7 @@ import wyc.block.util.encrypt.SerializeUtil;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 交易实体
@@ -21,13 +22,23 @@ public class Transaction implements Serializable {
         this.vOuts =vOuts;
         setId();
     }
+    public Transaction(byte[] txId,List<TxInput> vIns,List<TxOutput> vOuts){
+        this.id = txId;
+        this.vIns = vIns;
+        this.vOuts =vOuts;
 
+    }
     public byte[] getId() {
         return id;
     }
 
     private void setId() {
-        this.id = DataUtil.getSHA256Bytes(SerializeUtil.serialize(this.getClass()));
+        this.id = DataUtil.getSHA256Bytes(UUID.randomUUID().toString().getBytes());
+        System.out.println();
+    }
+
+    public void setId(byte[] id ){
+        this.id=id;
     }
 
     public  List<TxInput> getvIns() {

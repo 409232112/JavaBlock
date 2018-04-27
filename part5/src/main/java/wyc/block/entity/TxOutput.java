@@ -20,6 +20,11 @@ public class TxOutput implements Serializable {
         this.value = value;
         lock(DataUtil.string2Bytes(address));
     }
+    public TxOutput(int value,byte[] pubKeyHash){
+        this.value = value;
+        this.pubKeyHash=pubKeyHash;
+    }
+
     public int getValue() {
         return value;
     }
