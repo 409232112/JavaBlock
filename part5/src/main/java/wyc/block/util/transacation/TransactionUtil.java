@@ -42,10 +42,10 @@ public class TransactionUtil {
             data=to;
         }
         List vIns = new ArrayList<TxInput>();
-     //   vIns.add(new TxInput(new byte[0],-1,data));
+        vIns.add(new TxInput(new byte[0],-1,null,DataUtil.string2Bytes(data)));
 
         List vOuts = new ArrayList<TxOutput>();
-    //    vOuts.add( new TxOutput(subsidy,to));
+       vOuts.add( new TxOutput(subsidy,to));
 
         return new  Transaction(vIns,vOuts);
     }
@@ -60,9 +60,8 @@ public class TransactionUtil {
     public static Transaction getNewUTXOTransaction(String from,String to,int amount) throws Exception{
         List<TxInput> txInputs = new ArrayList<TxInput>();
         List<TxOutput> txOutPuts = new ArrayList<TxOutput>();
-
-        Wallet wallet =WalletUtil.getWalletFromWallets(from);
-        byte[] pubKeyHash = WalletUtil.hashPubKey(wallet.getPublicKey());
+        Wallet wallet =WalletUtil.getWallet(from);
+        byte[] pubKeyHash = WalletUtil.hashPubKey(wallet.getPublicKey().getEncoded());
         Map data = findSpendableOutputs(pubKeyHash,amount);
         int acc = Integer.valueOf(data.get("accumulated").toString());
         // 找到足够的未花费输出
@@ -74,7 +73,7 @@ public class TransactionUtil {
         for (Map.Entry<String,List<Integer>> entry : unspentOutputs.entrySet()) {
             byte[] txID = DataUtil.string2Bytes(entry.getKey());
             for(int out : entry.getValue() ){
-                txInputs.add(new TxInput(txID,out,null,wallet.getPublicKey()));
+                txInputs.add(new TxInput(txID,out,null,wallet.getPublicKey().getEncoded()));
             }
         }
         txOutPuts.add(new TxOutput(amount,to));

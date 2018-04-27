@@ -1,14 +1,15 @@
 package wyc.block.entity;
 
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 
-public class ECDSAKey {
+public class ECDSAKey implements Serializable {
 
-    private static ECPrivateKey privateKey;
-    private static ECPublicKey publicKey;
+    private ECPrivateKey privateKey;
+    private ECPublicKey publicKey;
 
     public ECDSAKey(){
         try {
@@ -22,12 +23,12 @@ public class ECDSAKey {
         }
     }
 
-    public static ECPrivateKey getPrivateKey() {
-        return privateKey;
+    public  ECPrivateKey getPrivateKey() {
+        return this.privateKey;
     }
 
-    public static ECPublicKey getPublicKey() {
-        return publicKey;
+    public  ECPublicKey getPublicKey() {
+        return this.publicKey;
     }
 
 

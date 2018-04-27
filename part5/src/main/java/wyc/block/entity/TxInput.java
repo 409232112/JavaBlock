@@ -17,13 +17,13 @@ public class TxInput implements Serializable {
     private byte[] txId;//交易ID
     private int vout;//输出数量
     private byte[] signature;
-    private static ECPublicKey publicKey;
+    private byte[] pubKeyHash;
 
-    public TxInput(byte[] txId,int vout,byte[] signature,ECPublicKey publicKey){
+    public TxInput(byte[] txId,int vout,byte[] signature,byte[] pubKeyHash){
         this.txId=txId;
         this.vout=vout;
         this.signature=signature;
-        this.publicKey=publicKey;
+        this.pubKeyHash=pubKeyHash;
     }
 
     public byte[] getTxId() { return txId; }
@@ -48,16 +48,16 @@ public class TxInput implements Serializable {
         this.signature = signature;
     }
 
-    public static ECPublicKey getPublicKey() {
-        return publicKey;
+    public byte[] getPubKeyHash() {
+        return pubKeyHash;
     }
 
-    public void setPublicKey(ECPublicKey publicKey) {
-        this.publicKey = publicKey;
+    public void setPubKeyHash(byte[] pubKeyHash) {
+        this.pubKeyHash = pubKeyHash;
     }
 
     public boolean useKey(byte[] pubKeyHash) throws Exception{
-        byte[] lockingHash = WalletUtil.hashPubKey(getPublicKey());
+        byte[] lockingHash = WalletUtil.hashPubKey(getPubKeyHash());
         return Arrays.equals(lockingHash,pubKeyHash);
     }
 

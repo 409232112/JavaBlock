@@ -38,8 +38,7 @@ public class TxOutput implements Serializable {
 
     public void lock(byte[] address){
         byte[] bytes = Base58Util.decode(address);
-        byte[] pubKeyHash = new byte[bytes.length-1-4];
-        System.arraycopy(bytes,1,pubKeyHash,0,bytes.length-4);
+        byte[] pubKeyHash = DataUtil.subBytes(bytes,1,bytes.length-4-1);
         setPubKeyHash(pubKeyHash);
     }
 

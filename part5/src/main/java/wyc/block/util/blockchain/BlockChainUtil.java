@@ -23,7 +23,6 @@ public class BlockChainUtil {
             saveBlock(BlockUtil.getNewGenesisBlock(TransactionUtil.getNewCoinbaseTx(BlockConstant.GENESIS_COINBASE_DATA,address)));//加入存储创世区块
         }else{
             logger.info("Blockchain already exists.");
-            System.exit(1);
         }
     }
 
