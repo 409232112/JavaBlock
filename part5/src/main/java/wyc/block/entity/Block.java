@@ -1,6 +1,7 @@
 package wyc.block.entity;
 
 import wyc.block.util.DataUtil;
+import wyc.block.util.blockchain.WalletUtil;
 import wyc.block.util.transacation.TransactionUtil;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.*;
  * PrevBlockHash : 前一个块的哈希
  * Hash          : 当前块的哈希
  * transactions  : 区块实际存储交易
+ * nonce         : 碰撞因子
  * @author Administrator
  */
 public class Block implements Serializable {
@@ -57,32 +59,36 @@ public class Block implements Serializable {
 	@Override
 	public String toString() {
 		String TransactionsInfo="-------------Transactions---------------\n";
-		for(Transaction tx : getTransactions()){
-			TransactionsInfo += "TransactionId : "+DataUtil.byte2Hex(tx.getId())+"    ";
-			TransactionsInfo += "IsCoinbase : "+TransactionUtil.isCoinbase(tx)+"    ";
+		try{
+			for(Transaction tx : getTransactions()){
+				TransactionsInfo += "TransactionId : "+DataUtil.byte2Hex(tx.getId())+"    ";
+				TransactionsInfo += "IsCoinbase : "+TransactionUtil.isCoinbase(tx)+"    ";
 
-			List<Map> txInputList = new ArrayList();
-			Map txInputMap = new HashMap();
-			for(TxInput txInput :tx.getvIns() ){
-				txInputMap.put("TxId",	DataUtil.byte2Hex(txInput.getTxId()));
-				txInputMap.put("Vout",	txInput.getVout());
-			//	txInputMap.put("ScripSig", txInput.getScripSig());
-				txInputList.add(txInputMap);
-				txInputMap = new HashMap();
-			}
-			TransactionsInfo += "\nTxInput : " +txInputList;
+				List<Map> txInputList = new ArrayList();
+				Map txInputMap = new HashMap();
+				for(TxInput txInput :tx.getvIns() ){
+					txInputMap.put("TxId",	DataUtil.byte2Hex(txInput.getTxId()));
+					txInputMap.put("Vout",	txInput.getVout());
+					txInputMap.put("PubKeyHash", DataUtil.byte2Hex(WalletUtil.hashPubKey(txInput.getPubKey())));
+					txInputMap.put("Signature",	DataUtil.bytes2String(txInput.getSignature()));
+					txInputList.add(txInputMap);
+					txInputMap = new HashMap();
+				}
+				TransactionsInfo += "\nTxInput : " +txInputList;
 
-			List<Map> txOutputList = new ArrayList();
-			Map txOutputMap = new HashMap();
-			for(TxOutput txOutput:tx.getvOuts()){
-				txOutputMap.put("Value",txOutput.getValue());
-				txOutputMap.put("PubKeyHash",DataUtil.byte2Hex(txOutput.getPubKeyHash()));
-				txOutputList.add(txOutputMap);
-				txOutputMap = new HashMap();
+				List<Map> txOutputList = new ArrayList();
+				Map txOutputMap = new HashMap();
+				for(TxOutput txOutput:tx.getvOuts()){
+					txOutputMap.put("Value",txOutput.getValue());
+					txOutputMap.put("PubKeyHash",DataUtil.byte2Hex(txOutput.getPubKeyHash()));
+					txOutputList.add(txOutputMap);
+					txOutputMap = new HashMap();
+				}
+				TransactionsInfo += "\nTxOutput : " +txOutputList;
 			}
-			TransactionsInfo += "\nTxOutput : " +txOutputList;
+		}catch (Exception e){
+			e.printStackTrace();
 		}
-
 		return "Prev Hash:"+DataUtil.byte2Hex(getPrevBlockHash())+"\n"+
 				"Hash:"+DataUtil.byte2Hex(getHash())+"\n"+
 				"Nonce:"+getNonce()+"\n"+

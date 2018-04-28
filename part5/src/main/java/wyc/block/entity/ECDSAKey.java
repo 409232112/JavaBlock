@@ -6,6 +6,9 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 
+/**
+ * 签名密钥对
+ */
 public class ECDSAKey implements Serializable {
 
     private ECPrivateKey privateKey;

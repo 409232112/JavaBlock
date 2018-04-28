@@ -16,6 +16,17 @@ public class ECDSAUtil {
     static{
         init();
     }
+    private static void init(){
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
+            keyPairGenerator.initialize(256);
+            keyFactory = KeyFactory.getInstance("EC");
+            signature =Signature.getInstance("SHA1withECDSA");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 对数据进行签名
      * @param src 源数据
@@ -53,18 +64,4 @@ public class ECDSAUtil {
         signature.update(src.getBytes());
         return signature.verify(HexBin.decode(sign));
     }
-
-    private static void init(){
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
-            keyPairGenerator.initialize(256);
-            keyFactory = KeyFactory.getInstance("EC");
-            signature =Signature.getInstance("SHA1withECDSA");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
-
 }

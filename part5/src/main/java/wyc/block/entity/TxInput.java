@@ -3,7 +3,6 @@ package wyc.block.entity;
 import wyc.block.util.blockchain.WalletUtil;
 
 import java.io.Serializable;
-import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 
 /**
@@ -17,13 +16,13 @@ public class TxInput implements Serializable {
     private byte[] txId;//交易ID
     private int vout;//输出数量
     private byte[] signature;
-    private byte[] pubKeyHash;
+    private byte[] pubKey;
 
-    public TxInput(byte[] txId,int vout,byte[] signature,byte[] pubKeyHash){
+    public TxInput(byte[] txId,int vout,byte[] signature,byte[] pubKey){
         this.txId=txId;
         this.vout=vout;
         this.signature=signature;
-        this.pubKeyHash=pubKeyHash;
+        this.pubKey=pubKey;
     }
 
     public byte[] getTxId() { return txId; }
@@ -48,16 +47,16 @@ public class TxInput implements Serializable {
         this.signature = signature;
     }
 
-    public byte[] getPubKeyHash() {
-        return pubKeyHash;
+    public byte[] getPubKey() {
+        return pubKey;
     }
 
-    public void setPubKeyHash(byte[] pubKeyHash) {
-        this.pubKeyHash = pubKeyHash;
+    public void setPubKey(byte[] pubKey) {
+        this.pubKey = pubKey;
     }
 
     public boolean useKey(byte[] pubKeyHash) throws Exception{
-        byte[] lockingHash = WalletUtil.hashPubKey(getPubKeyHash());
+        byte[] lockingHash = WalletUtil.hashPubKey(getPubKey());
         return Arrays.equals(lockingHash,pubKeyHash);
     }
 

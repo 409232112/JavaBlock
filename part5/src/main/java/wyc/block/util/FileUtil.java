@@ -4,6 +4,11 @@ import java.io.*;
 
 public class FileUtil {
 
+    /**
+     * 将object写入文件，object必须实现序列化接口
+     * @param o
+     * @param filePath
+     */
     public static void writeObject(Object o,String filePath) {
         try {
             FileOutputStream outStream = new FileOutputStream(filePath);
@@ -17,6 +22,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 读取文件转化成对象
+     * @param filePath
+     * @return
+     */
     public static Object readObject(String filePath){
         FileInputStream freader;
         Object o = null;
@@ -38,6 +48,10 @@ public class FileUtil {
         return o;
     }
 
+    /**
+     * 创建文件目录，没有就创建，有就不管
+     * @param dir
+     */
     public static void createDir(String dir){
         File f = new File(dir);
         if (!f.exists()) {
@@ -45,6 +59,10 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 创建文件，没有就创建，有就不管
+     * @param filePath
+     */
     public static void createFile(String filePath){
         try {
             File f = new File(filePath);

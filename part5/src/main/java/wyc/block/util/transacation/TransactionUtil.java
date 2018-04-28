@@ -104,7 +104,6 @@ public class TransactionUtil {
 
                 for(Transaction tx : txs) {//遍历区块中所有交易
                     String txId = DataUtil.byte2Hex(tx.getId());
-
                     Outputs:
                     for(int i=0;i< tx.getvOuts().size();i++){
                         if(spentTXOs.get(txId)!=null){
@@ -137,7 +136,6 @@ public class TransactionUtil {
             logger.info("No existing blockchain found. Create one first!");
             System.exit(1);
         }
-
         return unspentTxs;
     }
 
@@ -149,6 +147,7 @@ public class TransactionUtil {
     public static List<TxOutput> findUTXO(byte[] pubKeyHash) throws Exception{
         List<TxOutput> uTxOs = new ArrayList<TxOutput>();
         List<Transaction> unspentTxs =  findUnspentTransactions(pubKeyHash);
+
         for(Transaction tx : unspentTxs){
             for(TxOutput txO : tx.getvOuts()){
                 if(txO.isLockedWithKey(pubKeyHash)){
@@ -221,7 +220,22 @@ public class TransactionUtil {
         logger.info("Send Success!");
     }
 
-
+    /**
+     * 对交易进行数字签名
+     * @param transaction
+     * @param ecPrivateKey
+     * @throws Exception
+     */
+    public static void signTransaction(Transaction transaction,ECPrivateKey ecPrivateKey) throws Exception{
+        Map<String,Transaction> prevTXs = new HashMap<String, Transaction>();
+        for(TxInput txInput:transaction.getvIns()){
+            Transaction prevTX = findTransactionById(txInput.getTxId());
+            if(prevTX!=null){
+                prevTXs.put(DataUtil.byte2Hex(prevTX.getId()),prevTX);
+            }
+        }
+        singn(transaction,ecPrivateKey,prevTXs);
+    }
     public static void singn(Transaction tx,ECPrivateKey ecPrivateKey,Map<String,Transaction> prevTXs) throws  Exception{
         if(isCoinbase(tx)){
             return;
@@ -238,13 +252,29 @@ public class TransactionUtil {
             TxInput txInput = txCopy.getvIns().get(i);
             Transaction prevTx = prevTXs.get(DataUtil.byte2Hex(txInput.getTxId()));
             txCopy.getvIns().get(i).setSignature(null);
-            txCopy.getvIns().get(i).setPubKeyHash(prevTx.getvOuts().get(txInput.getVout()).getPubKeyHash());
+            txCopy.getvIns().get(i).setPubKey(prevTx.getvOuts().get(txInput.getVout()).getPubKeyHash());
             txCopy.setId(transactionHash(txCopy));
-            txCopy.getvIns().get(i).setPubKeyHash(null);
+            txCopy.getvIns().get(i).setPubKey(null);
             tx.getvIns().get(i).setSignature(ECDSAUtil.doSignAsBytes(DataUtil.bytes2String(txCopy.getId()),ecPrivateKey));
         }
     }
 
+    /**
+     * 对交易进行签名验证
+     * @param transaction
+     * @return
+     * @throws Exception
+     */
+    public static boolean verifyTransaction(Transaction transaction) throws Exception{
+        Map<String,Transaction> prevTXs = new HashMap<String, Transaction>();
+        for(TxInput txInput:transaction.getvIns()){
+            Transaction prevTX = findTransactionById(txInput.getTxId());
+            if(prevTX!=null){
+                prevTXs.put(DataUtil.byte2Hex(prevTX.getId()),prevTX);
+            }
+        }
+        return verify(transaction,prevTXs);
+    }
     public static boolean verify(Transaction tx,Map<String,Transaction> prevTXs) throws  Exception{
         if (isCoinbase(tx)){
             return false;
@@ -260,11 +290,11 @@ public class TransactionUtil {
             TxInput txInput = tx.getvIns().get(i);
             Transaction prevTx = prevTXs.get(DataUtil.byte2Hex(txInput.getTxId()));
             txCopy.getvIns().get(i).setSignature(null);
-            txCopy.getvIns().get(i).setPubKeyHash(prevTx.getvOuts().get(txInput.getVout()).getPubKeyHash());
+            txCopy.getvIns().get(i).setPubKey(prevTx.getvOuts().get(txInput.getVout()).getPubKeyHash());
             txCopy.setId(transactionHash(txCopy));
-            txCopy.getvIns().get(i).setPubKeyHash(null);
+            txCopy.getvIns().get(i).setPubKey(null);
 
-            if(ECDSAUtil.validateBytesKey(DataUtil.bytes2String(txCopy.getId()),DataUtil.bytes2String(txInput.getSignature()),txInput.getPubKeyHash())){
+            if(ECDSAUtil.validateBytesKey(DataUtil.bytes2String(txCopy.getId()),DataUtil.bytes2String(txInput.getSignature()),txInput.getPubKey())){
                 return true;
             }
 
@@ -295,6 +325,11 @@ public class TransactionUtil {
         return DataUtil.getSHA256Bytes(SerializeUtil.serialize(tx));
     }
 
+    /**
+     * 根据交易ID获取交易
+     * @param id
+     * @return
+     */
     public static Transaction findTransactionById(byte[] id){
         Object lastHashO = RedisUtil.get(BlockConstant.LAST_HASH_INDEX,BlockConstant.LAST_HASH_KEY);
         Transaction tx =null;
@@ -321,27 +356,4 @@ public class TransactionUtil {
         }
         return null;
     }
-
-
-    public static void signTransaction(Transaction transaction,ECPrivateKey ecPrivateKey) throws Exception{
-        Map<String,Transaction> prevTXs = new HashMap<String, Transaction>();
-        for(TxInput txInput:transaction.getvIns()){
-            Transaction prevTX = findTransactionById(txInput.getTxId());
-            if(prevTX!=null){
-                prevTXs.put(DataUtil.byte2Hex(prevTX.getId()),prevTX);
-            }
-        }
-        singn(transaction,ecPrivateKey,prevTXs);
-    }
-    public static boolean verifyTransaction(Transaction transaction) throws Exception{
-        Map<String,Transaction> prevTXs = new HashMap<String, Transaction>();
-        for(TxInput txInput:transaction.getvIns()){
-            Transaction prevTX = findTransactionById(txInput.getTxId());
-            if(prevTX!=null){
-                prevTXs.put(DataUtil.byte2Hex(prevTX.getId()),prevTX);
-            }
-        }
-        return verify(transaction,prevTXs);
-    }
-
 }

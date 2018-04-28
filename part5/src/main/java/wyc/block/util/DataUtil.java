@@ -4,14 +4,12 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.util.Arrays;
 
 public class DataUtil {
 
@@ -139,6 +137,9 @@ public class DataUtil {
 	 * @return
 	 */
 	public static String bytes2String(byte[] bytes) {
+		if(bytes==null){
+			return "";
+		}
 		return new String(bytes);
 	}
 
@@ -296,6 +297,11 @@ public class DataUtil {
 		return bs;
 	}
 
+	/**
+	 * 按照顺序合并多个byte数组为一个byte数组
+	 * @param args
+	 * @return
+	 */
 	public static byte[] combineBytes(byte[] ... args){
 		int totalLength = 0;
 		for(byte[] tmp:args){
