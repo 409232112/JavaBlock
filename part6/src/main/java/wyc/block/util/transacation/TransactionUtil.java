@@ -3,6 +3,7 @@ package wyc.block.util.transacation;
 import org.apache.log4j.Logger;
 import wyc.block.constant.BlockConstant;
 import wyc.block.constant.WalletConstant;
+import wyc.block.entity.*;
 import wyc.block.util.DataUtil;
 import wyc.block.util.RedisUtil;
 import wyc.block.util.blockchain.BlockChainUtil;

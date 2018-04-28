@@ -16,12 +16,12 @@ public class Transaction implements Serializable {
     private List<TxInput> vIns;
     private List<TxOutput> vOuts;
 
-    public Transaction(List<TxInput> vIns, List<TxOutput> vOuts){
+    public Transaction(List<TxInput> vIns,List<TxOutput> vOuts){
         this.vIns = vIns;
         this.vOuts =vOuts;
         setId();
     }
-    public Transaction(byte[] txId, List<TxInput> vIns, List<TxOutput> vOuts){
+    public Transaction(byte[] txId,List<TxInput> vIns,List<TxOutput> vOuts){
         this.id = txId;
         this.vIns = vIns;
         this.vOuts =vOuts;
