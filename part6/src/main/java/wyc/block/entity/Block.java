@@ -58,11 +58,11 @@ public class Block implements Serializable {
 	}
 	@Override
 	public String toString() {
-		String TransactionsInfo="-------------Transactions---------------\n";
+		String TransactionsInfo="";
 		try{
 			for(Transaction tx : getTransactions()){
-				TransactionsInfo += "TransactionId : "+DataUtil.byte2Hex(tx.getId())+"    ";
-				TransactionsInfo += "IsCoinbase : "+TransactionUtil.isCoinbase(tx)+"    ";
+				TransactionsInfo += "---- Transaction "+DataUtil.byte2Hex(tx.getId())+":\n";
+				TransactionsInfo += "          IsCoinbase : "+TransactionUtil.isCoinbase(tx);
 
 				List<Map> txInputList = new ArrayList();
 				Map txInputMap = new HashMap();
@@ -74,7 +74,7 @@ public class Block implements Serializable {
 					txInputList.add(txInputMap);
 					txInputMap = new HashMap();
 				}
-				TransactionsInfo += "\nTxInput : " +txInputList;
+				TransactionsInfo += "\n              TxInput : " +txInputList;
 
 				List<Map> txOutputList = new ArrayList();
 				Map txOutputMap = new HashMap();
@@ -84,14 +84,14 @@ public class Block implements Serializable {
 					txOutputList.add(txOutputMap);
 					txOutputMap = new HashMap();
 				}
-				TransactionsInfo += "\nTxOutput : " +txOutputList;
+				TransactionsInfo += "\n              TxOutput : " +txOutputList+"\n";
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return "Prev Hash:"+DataUtil.byte2Hex(getPrevBlockHash())+"\n"+
-				"Hash:"+DataUtil.byte2Hex(getHash())+"\n"+
+		return "===================== Block "+DataUtil.byte2Hex(getHash())+" =====================\n"+
+				"Prev Block:"+DataUtil.byte2Hex(getPrevBlockHash())+"\n"+
 				"Nonce:"+getNonce()+"\n"+
-				TransactionsInfo+"\n";
+				TransactionsInfo;
 	}
 }

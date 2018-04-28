@@ -216,6 +216,7 @@ public class TransactionUtil {
     public static void send(String from ,String to ,int amount) throws Exception{
         List<Transaction> txs = new ArrayList<Transaction>();
         txs.add(getNewUTXOTransaction(from,to,amount));
+        txs.add(getNewCoinbaseTx("",from));
         BlockChainUtil.mineBlock(txs);
         logger.info("Send Success!");
     }
@@ -277,7 +278,7 @@ public class TransactionUtil {
     }
     public static boolean verify(Transaction tx,Map<String,Transaction> prevTXs) throws  Exception{
         if (isCoinbase(tx)){
-            return false;
+            return true;
         }
         for(TxInput txInput :tx.getvIns()){
             if(prevTXs.get(DataUtil.byte2Hex(txInput.getTxId()))==null){

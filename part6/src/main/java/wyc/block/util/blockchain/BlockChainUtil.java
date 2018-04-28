@@ -102,7 +102,7 @@ public class BlockChainUtil {
         ProofOfWork proofOfWork = ProofOfWorkUtil.getNewProofOfWork(block);
         System.out.println("PoW "+ ProofOfWorkUtil.validate(proofOfWork));
         if(block.getPrevBlockHash().length!=0){
-            System.out.println("-------------------------------------------------- \n");
+            System.out.println("");
             printBlock(block.getPrevBlockHash());
         }
     }
