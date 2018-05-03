@@ -175,7 +175,6 @@ public final class RedisUtil {
         }
         jedis.select(index);
         byte[] bytes=jedis.get(key.getBytes());
-
         //释放资源
         close(jedis);
 
@@ -356,12 +355,18 @@ public final class RedisUtil {
      * 比如 查询所有以"session"开头的key的value集合
      * pattern : session*
      */
-    public static Set<byte[]> keys(String pattern){
+    public static Set<byte[]> keysByString(int index,String pattern){
+        return keysByBytes(index,pattern.getBytes());
+    }
+
+    public static Set<byte[]> keysByBytes(int index,byte[] pattern){
         Set<byte[]> keys = null;
         Jedis jedis=getJedis();
-        keys = jedis.keys(pattern.getBytes());
+        jedis.select(index);
+        keys = jedis.keys(pattern);
         close(jedis);
         return keys;
+
     }
 
     /**
@@ -409,8 +414,22 @@ public final class RedisUtil {
         close(jedis);
     }
 
-    public static void main(String args[]){
+    /**
+     * 清空index库
+     * @param index
+     */
+    public static void flush(int index){
+        Jedis jedis=getJedis();
+        if (jedis==null){
+            return ;
+        }
+        jedis.select(index);
+        jedis.flushDB();
+        close(jedis);
+    }
 
+
+    public static void main(String args[]){
 
     }
 }

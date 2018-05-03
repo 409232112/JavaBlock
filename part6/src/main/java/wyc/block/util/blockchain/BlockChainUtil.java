@@ -2,13 +2,13 @@ package wyc.block.util.blockchain;
 
 import org.apache.log4j.Logger;
 import wyc.block.constant.BlockConstant;
-import wyc.block.entity.Block;
-import wyc.block.entity.ProofOfWork;
-import wyc.block.entity.Transaction;
+import wyc.block.entity.*;
+import wyc.block.util.DataUtil;
 import wyc.block.util.RedisUtil;
 import wyc.block.util.transacation.TransactionUtil;
+import wyc.block.util.transacation.UTXOUtil;
 
-import java.util.List;
+import java.util.*;
 
 public class BlockChainUtil {
 
@@ -21,6 +21,7 @@ public class BlockChainUtil {
         Object lastHashO = RedisUtil.get(BlockConstant.LAST_HASH_INDEX,BlockConstant.LAST_HASH_KEY);
         if(lastHashO==null){
             saveBlock(BlockUtil.getNewGenesisBlock(TransactionUtil.getNewCoinbaseTx(BlockConstant.GENESIS_COINBASE_DATA,address)));//加入存储创世区块
+            UTXOUtil.reIndex();
         }else{
             logger.info("Blockchain already exists.");
         }
@@ -64,7 +65,8 @@ public class BlockChainUtil {
      * 交易挖矿生成新区块
      * @param transactions
      */
-    public static void mineBlock(List<Transaction> transactions){
+    public static Block mineBlock(List<Transaction> transactions){
+        Block block = null;
         try{
             for(Transaction transaction:transactions){
                 if(!TransactionUtil.verifyTransaction(transaction)){
@@ -74,12 +76,13 @@ public class BlockChainUtil {
             }
 
             byte[] lastHash =getLastHash();
-            Block block = BlockUtil.getNewBlock(transactions,lastHash);
+            block = BlockUtil.getNewBlock(transactions,lastHash);
             saveBlock(block);
         }catch (Exception e){
             e.printStackTrace();
             logger.error("Mine Block Error!!");
         }
+        return block;
     }
 
     /**
@@ -102,8 +105,61 @@ public class BlockChainUtil {
         ProofOfWork proofOfWork = ProofOfWorkUtil.getNewProofOfWork(block);
         System.out.println("PoW "+ ProofOfWorkUtil.validate(proofOfWork));
         if(block.getPrevBlockHash().length!=0){
-            System.out.println("");
             printBlock(block.getPrevBlockHash());
         }
+    }
+
+
+    /**
+     * 找到链中所有未话费的输出
+     * @return
+     */
+    public static Map<String,List<TxOutput>> findUTXO(){
+        Map<String,List<TxOutput>> UTXO = new HashMap<String,List<TxOutput>>();
+        Map<String ,List<Integer>> spentTXOs = new HashMap<String ,List<Integer>>();
+        Object lastHashO = RedisUtil.get(BlockConstant.LAST_HASH_INDEX,BlockConstant.LAST_HASH_KEY);
+
+        if(lastHashO!=null){
+            byte[] hash = (byte[])lastHashO;
+            while(hash.length>0){
+                Block block = BlockUtil.getBlockByHash(hash);
+                List<Transaction> txs = block.getTransactions();
+                for(int i=0;i<txs.size();i++){
+                    Transaction tx = txs.get(i);
+                    String txId = DataUtil.byte2Hex(tx.getId());
+                    Outputs:
+                    for(int outIdx=0;outIdx<tx.getvOuts().size();outIdx++){
+                        if(spentTXOs.get(txId)!=null){
+                            for(int spentOutIdx:spentTXOs.get(txId)){
+                                if(spentOutIdx == outIdx){
+                                    continue Outputs;
+                                }
+                            }
+                        }
+                        List<TxOutput> txOutputs =new ArrayList<TxOutput>();
+                        if( UTXO.get(txId)!=null){
+                            txOutputs = UTXO.get(txId);
+                        }
+                        txOutputs.add(tx.getvOuts().get(outIdx));
+                        UTXO.put(txId,txOutputs);
+                    }
+                    if(!TransactionUtil.isCoinbase(tx)){
+                        for(TxInput txInput : tx.getvIns()){
+                            String inTxID  = DataUtil.byte2Hex(txInput.getTxId());
+                            List<Integer> vouts = new ArrayList<Integer>();
+                            if(spentTXOs.get(inTxID)!=null){
+                                vouts = spentTXOs.get(inTxID);
+                            }
+                            vouts.add(txInput.getVout());
+                            spentTXOs.put(inTxID,vouts);
+                        }
+                    }
+                }
+                hash=block.getPrevBlockHash();
+            }
+        }else{
+            logger.info("No existing blockchain found. Create one first!");
+        }
+        return UTXO;
     }
 }

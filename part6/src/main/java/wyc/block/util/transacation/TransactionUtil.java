@@ -62,7 +62,7 @@ public class TransactionUtil {
         List<TxOutput> txOutPuts = new ArrayList<TxOutput>();
         Wallet wallet =WalletUtil.getWallet(from);
         byte[] pubKeyHash = WalletUtil.hashPubKey(wallet.getPublicKey().getEncoded());
-        Map data = findSpendableOutputs(pubKeyHash,amount);
+        Map data = UTXOUtil.findSpendableOutputs(pubKeyHash,amount);
         int acc = Integer.valueOf(data.get("accumulated").toString());
         // 找到足够的未花费输出
         Map<String ,List<Integer>> unspentOutputs = (Map<String ,List<Integer>>)data.get("unspentOutputs");
@@ -81,7 +81,6 @@ public class TransactionUtil {
         if (acc >amount){
             txOutPuts.add(new TxOutput(acc - amount,from));
         }
-
         Transaction transaction = new Transaction(txInputs,txOutPuts);
         signTransaction(transaction,wallet.getPrivateKey());
         return transaction;
@@ -139,11 +138,13 @@ public class TransactionUtil {
         return unspentTxs;
     }
 
+
     /**
-     * 找到未花费输出
+     * 从链中找到未花费输出
      * @param pubKeyHash
      * @return
      */
+    /*
     public static List<TxOutput> findUTXO(byte[] pubKeyHash) throws Exception{
         List<TxOutput> uTxOs = new ArrayList<TxOutput>();
         List<Transaction> unspentTxs =  findUnspentTransactions(pubKeyHash);
@@ -156,11 +157,12 @@ public class TransactionUtil {
             }
         }
         return uTxOs;
-    }
+    }*/
 
     /**
      * FindSpendableOutputs 从 address 中找到至少有 amount 的 UTXO
      */
+    /*
     public static Map findSpendableOutputs(byte[] pubKeyHash,int amount) throws Exception{
         Map retMap = new HashMap();
         Map<String ,List<Integer>> unspentOutputs = new HashMap<String ,List<Integer>>();
@@ -186,6 +188,7 @@ public class TransactionUtil {
         retMap.put("unspentOutputs",unspentOutputs);
         return retMap;
     }
+    */
 
     /**
      * 获取地址账户余额
@@ -200,7 +203,7 @@ public class TransactionUtil {
         int balance =0;
         byte[] bytes = Base58Util.decode(address);
         byte[] pubKeyHash = DataUtil.subBytes(bytes,1,bytes.length-WalletConstant.ADDRESS_CHECKSUM_LEN-1);
-        List<TxOutput> uTxOs = findUTXO(pubKeyHash);
+        List<TxOutput> uTxOs = UTXOUtil.findUTXO(pubKeyHash);
         for(TxOutput uTxO :uTxOs ){
             balance+=uTxO.getValue();
         }
@@ -217,7 +220,8 @@ public class TransactionUtil {
         List<Transaction> txs = new ArrayList<Transaction>();
         txs.add(getNewUTXOTransaction(from,to,amount));
         txs.add(getNewCoinbaseTx("",from));
-        BlockChainUtil.mineBlock(txs);
+        Block block = BlockChainUtil.mineBlock(txs);
+        UTXOUtil.updateUTXO(block);
         logger.info("Send Success!");
     }
 
@@ -235,6 +239,7 @@ public class TransactionUtil {
                 prevTXs.put(DataUtil.byte2Hex(prevTX.getId()),prevTX);
             }
         }
+
         singn(transaction,ecPrivateKey,prevTXs);
     }
     public static void singn(Transaction tx,ECPrivateKey ecPrivateKey,Map<String,Transaction> prevTXs) throws  Exception{
@@ -269,9 +274,11 @@ public class TransactionUtil {
     public static boolean verifyTransaction(Transaction transaction) throws Exception{
         Map<String,Transaction> prevTXs = new HashMap<String, Transaction>();
         for(TxInput txInput:transaction.getvIns()){
-            Transaction prevTX = findTransactionById(txInput.getTxId());
-            if(prevTX!=null){
-                prevTXs.put(DataUtil.byte2Hex(prevTX.getId()),prevTX);
+            if(txInput.getTxId().length!=0){
+                Transaction prevTX = findTransactionById(txInput.getTxId());
+                if(prevTX!=null){
+                    prevTXs.put(DataUtil.byte2Hex(prevTX.getId()),prevTX);
+                }
             }
         }
         return verify(transaction,prevTXs);

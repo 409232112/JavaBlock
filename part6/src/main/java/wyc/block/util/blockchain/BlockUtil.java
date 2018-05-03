@@ -1,9 +1,11 @@
 package wyc.block.util.blockchain;
 
+import wyc.block.constant.BlockConstant;
 import wyc.block.entity.Block;
 import wyc.block.entity.ProofOfWork;
 import wyc.block.entity.Transaction;
 import wyc.block.util.DataUtil;
+import wyc.block.util.RedisUtil;
 import wyc.block.util.encrypt.SerializeUtil;
 
 import java.util.ArrayList;
@@ -64,5 +66,9 @@ public class BlockUtil {
 	public static Block deserialize(byte[] bytes){
 		Object o =SerializeUtil.deserialize(bytes);
 		return o==null?null:(Block) o;
+	}
+
+	public static Block getBlockByHash(byte[] hash){
+		return deserialize(RedisUtil.get(BlockConstant.BLOCK_INDEX, hash));
 	}
 }
