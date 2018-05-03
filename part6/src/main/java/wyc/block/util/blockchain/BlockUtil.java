@@ -2,6 +2,7 @@ package wyc.block.util.blockchain;
 
 import wyc.block.constant.BlockConstant;
 import wyc.block.entity.Block;
+import wyc.block.entity.MerkleTree;
 import wyc.block.entity.ProofOfWork;
 import wyc.block.entity.Transaction;
 import wyc.block.util.DataUtil;
@@ -39,14 +40,14 @@ public class BlockUtil {
 	}
 
 	public static byte[] getTransactionsHash(Block block){
+		List<byte[]> txHashes  = new ArrayList<byte[]>();
 		List<Transaction> txs = block.getTransactions();
-		byte[][] txHashes = new byte[txs.size()][];
+		//byte[][] txHashes = new byte[txs.size()][];
 		for(int i=0;i<txs.size();i++){
-			txHashes[i] = txs.get(i).getId();
+			txHashes.add(SerializeUtil.serialize(txs.get(i)));
 		}
-		byte[] txHash = DataUtil.joinByte(txHashes);
-		return DataUtil.getSHA256Bytes(txHash);
-
+		MerkleTree tree = MerkleUtil.getNewMerkleTree(txHashes);
+		return DataUtil.getSHA256Bytes(tree.getRootNode().getData());
 	}
 
 	/**

@@ -27,23 +27,23 @@ public class BlockMain {
 	 */
 	public static void main(String[] args) throws  Exception{
 
-	//	String address1 = WalletUtil.createWallet();
-	//	String address2 = WalletUtil.createWallet();
-	//	//String address3 = WalletUtil.createWallet();
+		String address1 = WalletUtil.createWallet();
+		String address2 = WalletUtil.createWallet();
+		//String address3 = WalletUtil.createWallet();
 
 	//	System.out.println("address1:"+address1);
 	//	System.out.println("address2:"+address2);
-		//System.out.println("address3:"+address3);
-	//	BlockChainUtil.createBlockChain(address1);
+	//	System.out.println("address3:"+address3);
+		BlockChainUtil.createBlockChain(address1);
 	//	BlockChainUtil.printChain();
-	//	TransactionUtil.send(address1,address2,6);
-		TransactionUtil.send("16YqwiNnBUFQt2DAhTV9GHRduZQUnjZg15","13jqi39WXxh1KULsqoJCaLJfsUD9GygPsS",4);
+		TransactionUtil.send(address1,address2,6);
+	//	TransactionUtil.send("16YqwiNnBUFQt2DAhTV9GHRduZQUnjZg15","13jqi39WXxh1KULsqoJCaLJfsUD9GygPsS",4);
 
 	//	TransactionUtil.getBalance("1KLxKV3eCNuBTNLSm6JkhKQRNuCBxbSkUw");
 
 
 		WalletUtil.printWallet();
-	//	BlockChainUtil.printChain();
+		BlockChainUtil.printChain();
 
 
 
