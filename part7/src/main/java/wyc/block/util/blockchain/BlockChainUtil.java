@@ -47,7 +47,7 @@ public class BlockChainUtil {
      * 获取最新区块hash
      * @return
      */
-    private static byte[] getLastHash(){
+    public static byte[] getLastHash(){
         Object lastHashO = RedisUtil.get(BlockConstant.LAST_HASH_INDEX,BlockConstant.LAST_HASH_KEY);
         return lastHashO!=null?(byte[])lastHashO:null;
     }
@@ -67,8 +67,9 @@ public class BlockChainUtil {
      */
     public static Block mineBlock(List<Transaction> transactions){
         Block block = null;
+
         try{
-            for(Transaction transaction:transactions){
+          for(Transaction transaction:transactions){
                 if(!TransactionUtil.verifyTransaction(transaction)){
                     logger.error("ERROR: Invalid transaction");
                     System.exit(1);
@@ -76,7 +77,8 @@ public class BlockChainUtil {
             }
 
             byte[] lastHash =getLastHash();
-            block = BlockUtil.getNewBlock(transactions,lastHash);
+            int blockHeight = getBlockHeight();
+            block = BlockUtil.getNewBlock(transactions,lastHash,blockHeight+1);
             saveBlock(block);
         }catch (Exception e){
             e.printStackTrace();
@@ -161,5 +163,36 @@ public class BlockChainUtil {
             logger.info("No existing blockchain found. Create one first!");
         }
         return UTXO;
+    }
+
+    public static int getBlockHeight(){
+        return getLastBlock()==null?0:getLastBlock().getHeight();
+    }
+
+    public static List<byte[]> getBlocksHashes(){
+        List<byte[]> blocksHashes = new ArrayList<byte[]>();
+        Object lastHashO = RedisUtil.get(BlockConstant.LAST_HASH_INDEX,BlockConstant.LAST_HASH_KEY);
+        if(lastHashO!=null){
+            byte[] hash = (byte[])lastHashO;
+            while(hash.length>0){
+                Block block = BlockUtil.getBlockByHash(hash);
+                blocksHashes.add(block.getHash());
+                hash=block.getPrevBlockHash();
+            }
+        }else{
+            logger.info("No existing blockchain found. Create one first!");
+            System.exit(1);
+        }
+        return blocksHashes;
+    }
+
+    public static void addBlock(Block block){
+        int myBestHeight = getBlockHeight();
+        if(block.getHeight()>myBestHeight){
+            saveBlock(block);
+        }else{
+            byte[] key = block.getHash();
+            RedisUtil.set(BlockConstant.BLOCK_INDEX,key,BlockUtil.serialize(block));
+        }
     }
 }

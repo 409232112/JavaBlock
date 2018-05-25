@@ -7,6 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.log4j.Logger;
 import wyc.block.util.DataUtil;
+import wyc.block.util.blockchain.MsgHandleUtil;
 
 public class ServerHandler  extends ChannelInboundHandlerAdapter {
     private static Logger logger = Logger.getLogger(ServerHandler.class);
@@ -17,7 +18,7 @@ public class ServerHandler  extends ChannelInboundHandlerAdapter {
         ByteBuf byteBuf= (ByteBuf)msg;
         if (byteBuf!=null){
             byte[] bytes=ByteBufUtil.getBytes(byteBuf);
-            System.out.println("收到消息："+DataUtil.bytes2String(bytes));
+            MsgHandleUtil.msgHandle(bytes);
         }
         byteBuf.release();
     }
@@ -37,7 +38,7 @@ public class ServerHandler  extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        logger.info("Channel is Connected,channelId:[" + channel.id() + "]");
+       // logger.info("Channel is Connected,channelId:[" + channel.id() + "]");
         super.channelActive(ctx);
     }
 
@@ -45,7 +46,7 @@ public class ServerHandler  extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        logger.info("Channel is disConnect,channelId:[" + channel.id() + "]");
+        //logger.info("Channel is disConnect,channelId:[" + channel.id() + "]");
         // 关闭连接
         ctx.close();
     }

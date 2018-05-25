@@ -8,6 +8,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 public class Server extends Thread{
     private int port;
@@ -32,6 +33,7 @@ public class Server extends Thread{
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             // 注册handler
+                            ch.pipeline().addLast("lengthFieldDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,0,2,0,0,true));
                             ch.pipeline().addLast(new ServerHandler());
                         }
                     })

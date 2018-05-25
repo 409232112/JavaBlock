@@ -15,6 +15,7 @@ import java.util.*;
  * Hash          : 当前块的哈希
  * transactions  : 区块实际存储交易
  * nonce         : 碰撞因子
+ * height        :块高度
  * @author Administrator
  */
 public class Block implements Serializable {
@@ -24,12 +25,14 @@ public class Block implements Serializable {
 	private byte[] hash;
 	private List<Transaction> transactions;
 	private int nonce;
+	private int height;
 	
-	public Block(byte[] prevBlockHash,  List<Transaction> transactions){
+	public Block(byte[] prevBlockHash,  List<Transaction> transactions,int height){
 		this.timestamp=new Date().getTime();
 		this.prevBlockHash=prevBlockHash;
 		this.transactions=transactions;
 		this.nonce=0;
+		this.height=height;
 	}
 	
 	public long getTimestamp() {
@@ -55,6 +58,14 @@ public class Block implements Serializable {
 	}
 	public void setHash(byte[] hash) {
 		this.hash = hash;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
 	}
 	@Override
 	public String toString() {

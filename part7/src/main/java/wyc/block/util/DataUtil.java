@@ -318,7 +318,44 @@ public class DataUtil {
 	}
 
 
+	/**
+	 * 用于输出打印协议中的值为16进制，以下划线间隔
+	 * @param type Send or Recivie or Crc16
+	 * @param bytes 协议内容
+	 * @return String msg 转化后的字符串
+	 */
+	public static String bytesToHexStringWithUnderline( String type,byte[] bytes){
 
+		String msg = "["+ type +"]";
 
+		if ( bytes == null){
+			return "收到空报文。";
+		}
+
+		for (int x = 0; x < bytes.length ; x++) {
+
+			msg += x == bytes.length - 1 ? getNumberHex( bytes[x] ) : getNumberHex( bytes[x] ) + "_";
+
+		}
+		return msg;
+	}
+	public static String getNumberHex(int value){
+		String temp = Integer.toHexString(value) ;
+		if ( temp.length() > 2 ){
+			temp = temp.substring(temp.length() - 2 ,temp.length());
+		}else if ( temp.length() == 1 ){
+			temp = "0" + temp;
+		}
+		return temp.toUpperCase();
+	}
+
+	public static byte[] shortToBytes(short s) {
+		byte[] targets = new byte[2];
+		for (int i = 0; i < 2; i++) {
+			int offset = (targets.length - 1 - i) * 8;
+			targets[i] = (byte) ((s >>> offset) & 0xff);
+		}
+		return targets;
+	}
 
 }

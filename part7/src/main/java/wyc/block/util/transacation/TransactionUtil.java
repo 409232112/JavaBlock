@@ -4,8 +4,11 @@ import org.apache.log4j.Logger;
 import wyc.block.constant.BlockConstant;
 import wyc.block.constant.WalletConstant;
 import wyc.block.entity.*;
+import wyc.block.entity.net.KnownNodes;
+import wyc.block.net.Client;
 import wyc.block.util.DataUtil;
 import wyc.block.util.RedisUtil;
+import wyc.block.util.ServerUtil;
 import wyc.block.util.blockchain.BlockChainUtil;
 import wyc.block.util.blockchain.BlockUtil;
 import wyc.block.util.blockchain.WalletUtil;
@@ -52,15 +55,14 @@ public class TransactionUtil {
 
     /**
      * 获取一笔新的交易
-     * @param from
+     * @param wallet
      * @param to
      * @param amount
      * @return
      */
-    public static Transaction getNewUTXOTransaction(String from,String to,int amount) throws Exception{
+    public static Transaction getNewUTXOTransaction(Wallet wallet,String to,int amount) throws Exception{
         List<TxInput> txInputs = new ArrayList<TxInput>();
         List<TxOutput> txOutPuts = new ArrayList<TxOutput>();
-        Wallet wallet =WalletUtil.getWallet(from);
         byte[] pubKeyHash = WalletUtil.hashPubKey(wallet.getPublicKey().getEncoded());
         Map data = UTXOUtil.findSpendableOutputs(pubKeyHash,amount);
         int acc = Integer.valueOf(data.get("accumulated").toString());
@@ -79,7 +81,8 @@ public class TransactionUtil {
         txOutPuts.add(new TxOutput(amount,to));
         // 如果 UTXO 总数超过所需，则产生找零
         if (acc >amount){
-            txOutPuts.add(new TxOutput(acc - amount,from));
+
+            txOutPuts.add(new TxOutput(acc - amount,WalletUtil.getAddressString(wallet)));
         }
         Transaction transaction = new Transaction(txInputs,txOutPuts);
         signTransaction(transaction,wallet.getPrivateKey());
@@ -216,12 +219,28 @@ public class TransactionUtil {
      * @param to 目标地址
      * @param amount 发送数量
      */
-    public static void send(String from ,String to ,int amount) throws Exception{
+    public static void send(String from ,String to ,int amount,boolean mineNow) throws Exception{
+        if(!WalletUtil.validateAddress(from)){
+            logger.info("ERROR: Sender address is not valid");
+            return;
+        }
+        if(!WalletUtil.validateAddress(to)){
+            logger.info("ERROR: Recipient address is not valid");
+            return;
+        }
         List<Transaction> txs = new ArrayList<Transaction>();
-        txs.add(getNewUTXOTransaction(from,to,amount));
-        txs.add(getNewCoinbaseTx("",from));
-        Block block = BlockChainUtil.mineBlock(txs);
-        UTXOUtil.updateUTXO(block);
+        Wallet wallet = WalletUtil.getWallet(from);
+        Transaction tx = getNewUTXOTransaction(wallet,to,amount);
+        if(mineNow){
+            txs.add(tx);
+            txs.add(getNewCoinbaseTx("",from));
+            Block block = BlockChainUtil.mineBlock(txs);
+            UTXOUtil.updateUTXO(block);
+        }else{
+            ServerUtil.sendTx(KnownNodes.getKnownNodes().get(0),tx);
+        }
+
+
         logger.info("Send Success!");
     }
 

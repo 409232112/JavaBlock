@@ -15,7 +15,6 @@ public class SerializeUtil {
 	 * @return
 	 */
 	public static Object deserialize(byte[] bytes) {
-		
 		Object result = null;
 		
 		if (isEmpty(bytes)) {

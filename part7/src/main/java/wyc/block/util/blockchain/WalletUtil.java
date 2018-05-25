@@ -52,6 +52,9 @@ public class WalletUtil {
         byte[] address = Base58Util.encode2Bytes(fullPayload);
         return address;
     }
+    public static String getAddressString(Wallet wallet) throws Exception{
+        return DataUtil.bytes2String(getAddress(wallet));
+    }
 
     /**
      * 对公钥进行哈希、摘要算法

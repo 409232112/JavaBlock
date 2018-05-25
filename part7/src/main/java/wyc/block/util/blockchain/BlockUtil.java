@@ -20,8 +20,8 @@ public class BlockUtil {
 	 * @param prevBlockHash 	前一个区块hash值
 	 * @return
 	 */
-	public static Block getNewBlock(List<Transaction> txs, byte[] prevBlockHash) {
-		Block block = new Block(prevBlockHash, txs);
+	public static Block getNewBlock(List<Transaction> txs, byte[] prevBlockHash,int height) {
+		Block block = new Block(prevBlockHash, txs,height);
 		ProofOfWork proofOfWork = ProofOfWorkUtil.getNewProofOfWork(block);
 		Map proofData = ProofOfWorkUtil.run(proofOfWork);
 		block.setHash((byte[])proofData.get("hash"));
@@ -36,7 +36,7 @@ public class BlockUtil {
 	public static Block getNewGenesisBlock(Transaction coninbase) {
 		List<Transaction> txs = new ArrayList<Transaction>();
 		txs.add(coninbase);
-		return getNewBlock(txs, new byte[0]);
+		return getNewBlock(txs, new byte[0],0);
 	}
 
 	public static byte[] getTransactionsHash(Block block){
