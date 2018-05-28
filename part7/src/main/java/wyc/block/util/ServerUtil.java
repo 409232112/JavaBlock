@@ -57,43 +57,43 @@ public class ServerUtil {
     public static void  sendVersion(String address){
         int bestHeight = BlockChainUtil.getBlockHeight();
         byte[] payload =  SerializeUtil.serialize(new Version(BlockConstant.nodeVersion,bestHeight,nodeAddress ));
-        logger.info("Send VERSION To "+nodeAddress);
+        logger.info("Send VERSION To "+address);
         sendData(address,BlockConstant.VERSION,payload);
 
     }
     public static void sendGetBlocks(String address){
         byte[] payload = DataUtil.string2Bytes(nodeAddress);
-        logger.info("Send GET_BLOCK To "+nodeAddress);
+        logger.info("Send GET_BLOCK To "+address);
         sendData(address,BlockConstant.GET_BLOCK,payload);
     }
 
     public static void sendInv(String address ,String type,List<byte[]> blockHashes){
         Inventory inventory = new Inventory(nodeAddress,type,blockHashes);
         byte[] payload = SerializeUtil.serialize(inventory);
-        logger.info("Send INV  To "+nodeAddress);
+        logger.info("Send INV To "+address);
         sendData(address,BlockConstant.INV,payload);
     }
 
     public static void sendGetData(String address ,String type,byte[] blockHash){
         byte[] payload = SerializeUtil.serialize(new GetData(nodeAddress,type,blockHash));
-        logger.info("Send GET_DATA To "+nodeAddress);
+        logger.info("Send GET_DATA To "+address);
         sendData(address,BlockConstant.GET_DATA,payload);
     }
     public static void sendBlock(String address , Block block){
         byte[] payload = SerializeUtil.serialize(new NetBlock(nodeAddress,block));
-        logger.info("Send BLOCK  To "+nodeAddress);
+        logger.info("Send BLOCK To "+address);
         sendData(address,BlockConstant.BLOCK,payload);
     }
 
     public static void sendAddress(String address){
         byte[] payload = SerializeUtil.serialize(new Address(KnownNodes.getKnownNodes()));
-        logger.info("Send ADDRESS  To "+nodeAddress);
+        logger.info("Send ADDRESS To "+address);
         sendData(address,BlockConstant.ADDRESS,payload);
     }
 
     public static void sendTx(String address, Transaction tx){
         byte[] payload = SerializeUtil.serialize(new Tx(nodeAddress,tx));
-        logger.info("Send TX  To "+nodeAddress);
+        logger.info("Send TX To "+address);
         sendData(address,BlockConstant.TX,payload);
     }
 

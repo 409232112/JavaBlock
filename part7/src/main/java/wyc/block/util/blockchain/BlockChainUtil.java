@@ -71,7 +71,7 @@ public class BlockChainUtil {
         try{
           for(Transaction transaction:transactions){
                 if(!TransactionUtil.verifyTransaction(transaction)){
-                    logger.error("ERROR: Invalid transaction");
+                    logger.error("ERROR: Invalid transaction "+DataUtil.byte2Hex(transaction.getId()));
                     System.exit(1);
                 }
             }

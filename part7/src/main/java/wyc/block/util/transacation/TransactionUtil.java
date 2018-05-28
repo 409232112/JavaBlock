@@ -308,7 +308,7 @@ public class TransactionUtil {
         }
         for(TxInput txInput :tx.getvIns()){
             if(prevTXs.get(DataUtil.byte2Hex(txInput.getTxId()))==null){
-                logger.error("ERROR: Previous transaction is not correct!");
+                logger.error("ERROR: Previous transaction is not correct! "+DataUtil.byte2Hex(txInput.getTxId()));
                 return false;
             }
         }
@@ -379,8 +379,25 @@ public class TransactionUtil {
             }
         }
         if(block.getPrevBlockHash().length!=0){
-            findTransaction(block.getPrevBlockHash(),id);
+            List<Transaction> list = new ArrayList<Transaction>();
+            findTransactionLoop(block.getPrevBlockHash(),id,list);
+            if(list.size()!=0){
+                return list.get(0);
+            }
         }
+        System.out.println("return null");
         return null;
+    }
+    private static void  findTransactionLoop(byte[] hash,byte[] id,List<Transaction> list){
+        Block block = BlockUtil.deserialize(RedisUtil.get(BlockConstant.BLOCK_INDEX,hash));
+        for(Transaction tx :block.getTransactions()){
+            if(Arrays.equals(tx.getId(),id)){
+                list.add(tx);
+            }
+        }
+        if(block.getPrevBlockHash().length!=0){
+            findTransactionLoop(block.getPrevBlockHash(),id,list);
+        }
+
     }
 }

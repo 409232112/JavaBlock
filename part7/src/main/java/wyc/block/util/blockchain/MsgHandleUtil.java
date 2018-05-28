@@ -57,7 +57,7 @@ public class MsgHandleUtil {
     }
     public static void addressHandle(byte[] data){
         Address address = (Address)SerializeUtil.deserialize(data);
-        logger.info("Recive AddressHandle From" +address.getAddress());
+        logger.info("Recive AddressHandle From " +address.getAddress());
         List<String> addressList = address.getAddress();
         for(int i=0;i<addressList.size();i++){
             KnownNodes.addKnownNodes(addressList.get(i));

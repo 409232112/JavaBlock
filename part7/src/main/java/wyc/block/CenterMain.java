@@ -29,16 +29,23 @@ public class CenterMain {
         */
 
         /*
-        TransactionUtil.send("1Eejgnmnkp72bnya8ZtLmKnVf5vsS1KXhm","12Rm812Yw8QAUyN9TpB74F9x9NcXG9ex84",3,true);
-        TransactionUtil.send("1Eejgnmnkp72bnya8ZtLmKnVf5vsS1KXhm","1MsVzsmBgb9PistevJrbNfxxB25i6FbY5p",4,true);
-           */
+        TransactionUtil.send("13ifq7BfguxhKmrwmkRVvz3qQD8qNnaZNq","1HcvgtJbbU2sYuRNRHAWfLNK72iiDY3W9N",3,true);
+        TransactionUtil.send("13ifq7BfguxhKmrwmkRVvz3qQD8qNnaZNq","1HAzPgj1iwaFqjdF9iwBtgPMdgSLTQGqsC",4,true);
+        */
 
 
-        TransactionUtil.getBalance("1Eejgnmnkp72bnya8ZtLmKnVf5vsS1KXhm");
-        TransactionUtil.getBalance("12Rm812Yw8QAUyN9TpB74F9x9NcXG9ex84");
-        TransactionUtil.getBalance("1MsVzsmBgb9PistevJrbNfxxB25i6FbY5p");
 
 
+        TransactionUtil.getBalance("13ifq7BfguxhKmrwmkRVvz3qQD8qNnaZNq");
+
+        TransactionUtil.getBalance("1HcvgtJbbU2sYuRNRHAWfLNK72iiDY3W9N");
+        TransactionUtil.getBalance("1HAzPgj1iwaFqjdF9iwBtgPMdgSLTQGqsC");
+        TransactionUtil.getBalance("13NWKLzhfrNh1t8Qxr95iA8bHhg6AgxnsG");
+
+        TransactionUtil.getBalance("122nWkQTRpXLiyctAtGTU2Aixii5bNLP5X");
+
+
+        WalletUtil.printWallet();
 
 
 
