@@ -1,0 +1,37 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</head>
+<body>
+    <div class="easyui-panel" title="Block Command Window" style="width:1200px;padding:20px 20px">
+        <div style="margin-bottom:20px">
+            <input id="balance" class="easyui-textbox" data-options="prompt:'Enter a Wallet Address To GetBalance',required:true" style="width:60%;height:32px">
+            <a id="getBalance" class="easyui-linkbutton" iconCls="icon-search" style="width:15%;height:32px;margin-left:5%;">查询钱包余额</a>
+        </div>
+        <div style="margin-bottom:20px">
+          从:
+            <input id="from" class="easyui-textbox"  data-options="required:true" style="width:25%;height:32px">
+          至:
+            <input id="to" class="easyui-textbox"  data-options="required:true" style="width:25%;height:32px">
+          数量:
+            <input id="amount" class="easyui-textbox"  data-options="required:true" style="width:5%;height:32px">
+          立即挖矿
+            <input type="radio" name="mineNow" value="0" checked >否</input>
+            <input type="radio" name="mineNow" value="1">是</input>
+            <a id="send" class="easyui-linkbutton" iconCls="icon-ok" style="width:15%;height:32px;margin-left:5%;">发送</a>
+        </div>
+        <div style="margin-bottom:20px">
+            <a id="createBlockChain" class="easyui-linkbutton" iconCls="icon-add" style="width:15%;height:32px;margin-left:2%;">创建区块链</a>
+            <a id="printChain" class="easyui-linkbutton" iconCls="icon-print" style="width:15%;height:32px;margin-left:2%;">打印区块链</a>
+            <a id="createWallet" class="easyui-linkbutton" iconCls="icon-add" style="width:15%;height:32px;margin-left:2%;">创建钱包</a>
+            <a id="printWallet" class="easyui-linkbutton" iconCls="icon-print" style="width:15%;height:32px;margin-left:2%;">打印本地钱包</a>
+            <a id="reindexUTX0" class="easyui-linkbutton" iconCls="icon-redo" style="width:15%;height:32px;margin-left:2%;">reindexUTX0</a>
+        </div>
+    </div>
+</body>
+</html>
